@@ -1,8 +1,7 @@
 from django.contrib.auth.models import User
-from django.views.decorators.cache import cache_page
 
 from ninja import NinjaAPI
-from ninja.decorators import decorate_view
+from ninja.throttling import AuthRateThrottle
 import redis
 
 api = NinjaAPI()
@@ -27,7 +26,7 @@ def redis_test(request):
     return {"redis_value": value}
 
 
-@api.get("/cache-test")
+@api.get("/cache-test", throttle=AuthRateThrottle("1/sec"))
 @decorate_view(cache_page(30))
 def cache_test(request):
     users = list(

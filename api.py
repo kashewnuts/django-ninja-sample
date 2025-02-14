@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
+from django.views.decorators.cache import cache_page
 
 from ninja import NinjaAPI
+from ninja.decorators import decorate_view
 from ninja.throttling import AuthRateThrottle
 import redis
 

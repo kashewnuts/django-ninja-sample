@@ -1,4 +1,8 @@
+from django.contrib.auth.models import User
+from django.views.decorators.cache import cache_page
+
 from ninja import NinjaAPI
+from ninja.decorators import decorate_view
 import redis
 
 api = NinjaAPI()
@@ -21,3 +25,12 @@ def redis_test(request):
     # 値を取得
     value = r.get("test_key").decode("utf-8")
     return {"redis_value": value}
+
+
+@api.get("/cache-test")
+@decorate_view(cache_page(30))
+def cache_test(request):
+    users = list(
+        User.objects.values("id", "username", "email", "first_name", "last_name")
+    )
+    return users
